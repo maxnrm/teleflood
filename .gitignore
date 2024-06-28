@@ -1,0 +1,12 @@
+web/*_templ.go
+web/*/*_templ.go
+web/static/css/main.min.css.gz
+bin
+
+*.env*
+schema.graphql
+generated.go
+
+.vscode
+
+*.code-workspace

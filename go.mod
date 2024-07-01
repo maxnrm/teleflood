@@ -1,4 +1,4 @@
-module teleflood
+module github.com/maxnrm/teleflood
 
 go 1.22.3
 

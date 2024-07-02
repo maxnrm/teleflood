@@ -36,21 +36,21 @@ type FloodMessage struct {
 	BotToken  string      `json:"bot_token"`
 	Recipient Recipient   `json:"recipient"`
 
-	Text      string          `json:"text"`
-	Audio     *tele.Audio     `json:"audio"`
-	Document  *tele.Document  `json:"document"`
-	Photo     *tele.Photo     `json:"photo"`
-	Sticker   *tele.Sticker   `json:"sticker"`
-	Voice     *tele.Voice     `json:"voice"`
-	VideoNote *tele.VideoNote `json:"video_note"`
-	Video     *tele.Video     `json:"video"`
-	Animation *tele.Animation `json:"animation"`
-	Contact   *tele.Contact   `json:"contact"`
-	Location  *tele.Location  `json:"location"`
-	Venue     *tele.Venue     `json:"venue"`
-	Poll      *tele.Poll      `json:"poll"`
-	Game      *tele.Game      `json:"game"`
-	Dice      *tele.Dice      `json:"dice"`
+	Text      *string         `json:"text,omitempty"`
+	Audio     *tele.Audio     `json:"audio,omitempty"`
+	Document  *tele.Document  `json:"document,omitempty"`
+	Photo     *tele.Photo     `json:"photo,omitempty"`
+	Sticker   *tele.Sticker   `json:"sticker,omitempty"`
+	Voice     *tele.Voice     `json:"voice,omitempty"`
+	VideoNote *tele.VideoNote `json:"video_note,omitempty"`
+	Video     *tele.Video     `json:"video,omitempty"`
+	Animation *tele.Animation `json:"animation,omitempty"`
+	Contact   *tele.Contact   `json:"contact,omitempty"`
+	Location  *tele.Location  `json:"location,omitempty"`
+	Venue     *tele.Venue     `json:"venue,omitempty"`
+	Poll      *tele.Poll      `json:"poll,omitempty"`
+	Game      *tele.Game      `json:"game,omitempty"`
+	Dice      *tele.Dice      `json:"dice,omitempty"`
 
-	SendOptions tele.SendOptions `json:"send_options"`
+	SendOptions *tele.SendOptions `json:"send_options,omitempty"`
 }

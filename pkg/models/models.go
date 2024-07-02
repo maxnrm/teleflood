@@ -36,6 +36,7 @@ type FloodMessage struct {
 	BotToken  string      `json:"bot_token"`
 	Recipient Recipient   `json:"recipient"`
 
+	Text      string          `json:"text"`
 	Audio     *tele.Audio     `json:"audio"`
 	Document  *tele.Document  `json:"document"`
 	Photo     *tele.Photo     `json:"photo"`

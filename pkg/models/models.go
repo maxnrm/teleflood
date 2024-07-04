@@ -15,6 +15,7 @@ func (r *Recipient) Recipient() string {
 type MessageType string
 
 const (
+	Text      MessageType = "Text"
 	Audio     MessageType = "Audio"
 	Document  MessageType = "Document"
 	Photo     MessageType = "Photo"
@@ -23,7 +24,6 @@ const (
 	VideoNote MessageType = "MessageType"
 	Video     MessageType = "Video"
 	Animation MessageType = "Animation"
-	Contact   MessageType = "Contact"
 	Location  MessageType = "Location"
 	Venue     MessageType = "Venue"
 	Poll      MessageType = "Poll"
@@ -33,7 +33,6 @@ const (
 
 type FloodMessage struct {
 	Type      MessageType `json:"message_type"`
-	BotToken  string      `json:"bot_token"`
 	Recipient Recipient   `json:"recipient"`
 
 	Text      *string         `json:"text,omitempty"`
@@ -45,7 +44,6 @@ type FloodMessage struct {
 	VideoNote *tele.VideoNote `json:"video_note,omitempty"`
 	Video     *tele.Video     `json:"video,omitempty"`
 	Animation *tele.Animation `json:"animation,omitempty"`
-	Contact   *tele.Contact   `json:"contact,omitempty"`
 	Location  *tele.Location  `json:"location,omitempty"`
 	Venue     *tele.Venue     `json:"venue,omitempty"`
 	Poll      *tele.Poll      `json:"poll,omitempty"`
@@ -53,4 +51,9 @@ type FloodMessage struct {
 	Dice      *tele.Dice      `json:"dice,omitempty"`
 
 	SendOptions *tele.SendOptions `json:"send_options,omitempty"`
+}
+
+type FloodMessageWithToken struct {
+	BotToken     string       `json:"bot_token"`
+	FloodMessage FloodMessage `json:"message"`
 }

@@ -1,6 +1,8 @@
 package sender
 
 import (
+	"errors"
+
 	m "github.com/maxnrm/teleflood/pkg/models"
 	tele "gopkg.in/telebot.v3"
 )
@@ -53,6 +55,8 @@ func (s *Sender) Send(fm *m.FloodMessage) error {
 		object = fm.Game
 	case m.Dice:
 		object = fm.Dice
+	default:
+		return errors.New("teleflood: now Sendable provided")
 	}
 
 	_, err := s.b.Send(&fm.Recipient, object, fm.SendOptions)

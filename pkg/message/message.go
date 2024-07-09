@@ -1,4 +1,4 @@
-package models
+package message
 
 import (
 	tele "gopkg.in/telebot.v3"

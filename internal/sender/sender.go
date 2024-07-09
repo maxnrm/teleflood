@@ -3,7 +3,7 @@ package sender
 import (
 	"errors"
 
-	m "github.com/maxnrm/teleflood/pkg/models"
+	m "github.com/maxnrm/teleflood/pkg/message"
 	tele "gopkg.in/telebot.v3"
 )
 

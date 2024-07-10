@@ -2,10 +2,7 @@ package nats
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 	"log"
-	"teleflood/internal/models"
 
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
@@ -57,43 +54,43 @@ func (nc *NatsClient) UsePublishSubject(subject string) {
 	nc.PS = &subject
 }
 
-func (nc *NatsClient) Publish(message *models.SendableMessage) {
-	if nc.PS == nil {
-		err := errors.New("no subject was set for publishing")
-		log.Fatal(err)
-		return
-	}
+// func (nc *NatsClient) Publish(message *models.SendableMessage) {
+// 	if nc.PS == nil {
+// 		err := errors.New("no subject was set for publishing")
+// 		log.Fatal(err)
+// 		return
+// 	}
 
-	if message.Photo != nil {
-		toSend := &models.SendableMessage{
-			Recipient:   message.Recipient,
-			Photo:       message.Photo,
-			SendOptions: message.SendOptions,
-		}
+// 	if message.Photo != nil {
+// 		toSend := &models.SendableMessage{
+// 			Recipient:   message.Recipient,
+// 			Photo:       message.Photo,
+// 			SendOptions: message.SendOptions,
+// 		}
 
-		toSendJson, err := json.Marshal(toSend)
-		if err != nil {
-			log.Println(err)
-			return
-		}
+// 		toSendJson, err := json.Marshal(toSend)
+// 		if err != nil {
+// 			log.Println(err)
+// 			return
+// 		}
 
-		nc.NC.Publish(*nc.PS, toSendJson)
-	}
+// 		nc.NC.Publish(*nc.PS, toSendJson)
+// 	}
 
-	if message.Text != nil {
-		toSend := &models.SendableMessage{
-			Recipient:   message.Recipient,
-			Text:        message.Text,
-			SendOptions: message.SendOptions,
-		}
+// 	if message.Text != nil {
+// 		toSend := &models.SendableMessage{
+// 			Recipient:   message.Recipient,
+// 			Text:        message.Text,
+// 			SendOptions: message.SendOptions,
+// 		}
 
-		toSendJson, err := json.Marshal(toSend)
-		if err != nil {
-			log.Println(err)
-			return
-		}
+// 		toSendJson, err := json.Marshal(toSend)
+// 		if err != nil {
+// 			log.Println(err)
+// 			return
+// 		}
 
-		nc.NC.Publish(*nc.PS, toSendJson)
-	}
+// 		nc.NC.Publish(*nc.PS, toSendJson)
+// 	}
 
-}
+// }

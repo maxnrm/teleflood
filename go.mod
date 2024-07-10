@@ -4,7 +4,6 @@ go 1.22.3
 
 require (
 	github.com/nats-io/nats.go v1.36.0
-	golang.org/x/time v0.5.0
 	gopkg.in/telebot.v3 v3.3.6
 )
 

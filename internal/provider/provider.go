@@ -12,7 +12,8 @@ import (
 )
 
 type Provider struct {
-	client jetstream.Consumer
+	cons jetstream.Consumer
+	mc   jetstream.MessagesContext
 }
 
 func New() *Provider {
@@ -41,20 +42,22 @@ func New() *Provider {
 	}
 
 	natsClient.CreateStream(streamConfig)
-	consumer := natsClient.CreateConsumer(streamConfig.Name, consumerConfig)
+	cons := natsClient.CreateConsumer(streamConfig.Name, consumerConfig)
+	mc, _ := cons.Messages()
 
 	return &Provider{
-		client: consumer,
+		cons: cons,
+		mc:   mc,
 	}
 }
 
-func (p *Provider) Next() (*m.FloodMessage, error) {
-	msg, err := p.client.Next()
+func (p *Provider) Next() (*m.FloodMessageWithToken, error) {
+	msg, err := p.mc.Next()
 	if err != nil {
 		return nil, err
 	}
 
-	var floodMsg m.FloodMessage
+	var floodMsg m.FloodMessageWithToken
 
 	json.Unmarshal(msg.Data(), &floodMsg)
 

@@ -16,9 +16,13 @@ func New(botToken string) (*Sender, error) {
 		Token: botToken,
 	})
 
+	if err != nil {
+		return nil, err
+	}
+
 	return &Sender{
 		b: b,
-	}, err
+	}, nil
 }
 
 func (s *Sender) Send(fm *m.FloodMessage) error {

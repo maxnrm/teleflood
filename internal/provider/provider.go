@@ -51,7 +51,7 @@ func New() *Provider {
 	}
 }
 
-func (p *Provider) Next() (*m.FloodMessageWithToken, error) {
+func (p *Provider) Next(ctx context.Context) (*m.FloodMessageWithToken, error) {
 	msg, err := p.mc.Next()
 	if err != nil {
 		return nil, err
@@ -59,7 +59,12 @@ func (p *Provider) Next() (*m.FloodMessageWithToken, error) {
 
 	var floodMsg m.FloodMessageWithToken
 
-	json.Unmarshal(msg.Data(), &floodMsg)
+	err = json.Unmarshal(msg.Data(), &floodMsg)
+	if err != nil {
+		return nil, err
+	}
 
+	// TODO: ack only after message been sent without error
+	msg.DoubleAck(ctx)
 	return &floodMsg, nil
 }

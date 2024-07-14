@@ -16,8 +16,8 @@ var NATS_MESSAGES_STREAM = getEnvStrWithDefault("NATS_MESSAGES_STREAM", "tg-mess
 var NATS_MESSAGES_CONSUMER = getEnvStrWithDefault("NATS_MESSAGES_CONSUMER", "tg-messages-user-consumer")
 var NATS_MESSAGES_SUBJECT = getEnvStrWithDefault("NATS_MESSAGES_SUBJECT", "tg.messages.user")
 
-var RATE_LIMIT_GLOBAL = getEnvIntWithDefault("RATE_LIMIT_GLOBAL", 30) // per sec
-var RATE_LIMIT_USER = getEnvIntWithDefault("RATE_LIMIT_USER", 1)      // per sec
+var GLOBAL_RATE_LIMIT_GLOBAL = getEnvIntWithDefault("GLOBAL_RATE_LIMIT", 30) // per sec
+var USER_RATE_LIMIT = getEnvIntWithDefault("USER_RATE_LIMIT", 1)             // per sec
 
 func getEnvStrWithDefault(key string, dv string) string {
 	v, exists := os.LookupEnv(key)

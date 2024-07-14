@@ -5,19 +5,23 @@ import (
 	"fmt"
 
 	"github.com/maxnrm/teleflood/config"
-	"github.com/maxnrm/teleflood/internal/provider"
 	"github.com/maxnrm/teleflood/internal/sender"
+	"github.com/maxnrm/teleflood/pkg/message"
 	"go.uber.org/ratelimit"
 )
+
+type provider interface {
+	Next(context.Context) (*message.WrappedMessage, error)
+}
 
 type Flooder struct {
 	grl ratelimit.Limiter
 	// TODO: delete senders unused for some time
 	smap map[string]*sender.Sender
-	p    provider.Provider
+	p    provider
 }
 
-func New(p provider.Provider) *Flooder {
+func New(p provider) *Flooder {
 
 	grl := ratelimit.New(config.GLOBAL_RATE_LIMIT_GLOBAL)
 

@@ -33,11 +33,11 @@ func (s *Sender) Send(grl ratelimit.Limiter, fm *m.FloodMessage) error {
 
 	var object tele.Sendable
 
-	var sendOptions tele.SendOptions
+	var sendOptions *tele.SendOptions
 	if fm.SendOptions == nil {
-		sendOptions = tele.SendOptions{}
+		sendOptions = &tele.SendOptions{Protected: true}
 	} else {
-		sendOptions = *fm.SendOptions
+		sendOptions = fm.SendOptions
 	}
 
 	switch fm.Type {

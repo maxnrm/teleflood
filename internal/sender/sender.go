@@ -3,12 +3,16 @@ package sender
 import (
 	"errors"
 
+	"github.com/maxnrm/teleflood/config"
 	m "github.com/maxnrm/teleflood/pkg/message"
+	"go.uber.org/ratelimit"
 	tele "gopkg.in/telebot.v3"
 )
 
 type Sender struct {
 	b *tele.Bot
+	// TODO: delete items unused for some time
+	userRateLimit map[string]ratelimit.Limiter
 }
 
 func New(botToken string) (*Sender, error) {
@@ -25,7 +29,7 @@ func New(botToken string) (*Sender, error) {
 	}, nil
 }
 
-func (s *Sender) Send(fm *m.FloodMessage) error {
+func (s *Sender) Send(grl ratelimit.Limiter, fm *m.FloodMessage) error {
 
 	var object tele.Sendable
 
@@ -63,6 +67,19 @@ func (s *Sender) Send(fm *m.FloodMessage) error {
 		return errors.New("teleflood: now Sendable provided")
 	}
 
+	chatId := fm.Recipient.Recipient()
+
+	// check if we can send complyting to user ratelimit
+	if rl, ok := s.userRateLimit[chatId]; !ok {
+		s.userRateLimit[chatId] = ratelimit.New(config.USER_RATE_LIMIT)
+		rl := s.userRateLimit[chatId]
+		rl.Take()
+	} else {
+		rl.Take()
+	}
+
+	// check if we can send complying to global rate limit
+	grl.Take()
 	_, err := s.b.Send(&fm.Recipient, object, fm.SendOptions)
 
 	return err

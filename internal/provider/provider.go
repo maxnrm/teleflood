@@ -51,13 +51,13 @@ func New() *Provider {
 	}
 }
 
-func (p *Provider) Next(ctx context.Context) (*m.FloodMessageWithToken, error) {
+func (p *Provider) Next(ctx context.Context) (*m.WrappedMessage, error) {
 	msg, err := p.mc.Next()
 	if err != nil {
 		return nil, err
 	}
 
-	var floodMsg m.FloodMessageWithToken
+	var floodMsg m.WrappedMessage
 
 	err = json.Unmarshal(msg.Data(), &floodMsg)
 	if err != nil {

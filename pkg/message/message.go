@@ -53,7 +53,7 @@ type FloodMessage struct {
 	SendOptions *tele.SendOptions `json:"send_options,omitempty"`
 }
 
-type FloodMessageWithToken struct {
+type WrappedMessage struct {
 	BotToken     string       `json:"bot_token"`
 	FloodMessage FloodMessage `json:"message"`
 }

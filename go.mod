@@ -4,10 +4,12 @@ go 1.22.3
 
 require (
 	github.com/nats-io/nats.go v1.36.0
+	go.uber.org/ratelimit v0.3.1
 	gopkg.in/telebot.v3 v3.3.6
 )
 
 require (
+	github.com/benbjohnson/clock v1.3.0 // indirect
 	github.com/klauspost/compress v1.17.2 // indirect
 	github.com/nats-io/nkeys v0.4.7 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect

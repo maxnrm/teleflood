@@ -2,6 +2,7 @@ package sender
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/maxnrm/teleflood/config"
 	m "github.com/maxnrm/teleflood/pkg/message"
@@ -32,6 +33,8 @@ func New(botToken string) (*Sender, error) {
 func (s *Sender) Send(grl ratelimit.Limiter, fm *m.FloodMessage) error {
 
 	var object tele.Sendable
+
+	fmt.Println(fm)
 
 	switch fm.Type {
 	case m.Text:
@@ -78,9 +81,16 @@ func (s *Sender) Send(grl ratelimit.Limiter, fm *m.FloodMessage) error {
 		rl.Take()
 	}
 
+	var sendOptions tele.SendOptions
+	if fm.SendOptions == nil {
+		sendOptions = tele.SendOptions{}
+	} else {
+		sendOptions = *fm.SendOptions
+	}
+
 	// check if we can send complying to global rate limit
 	grl.Take()
-	_, err := s.b.Send(&fm.Recipient, object, fm.SendOptions)
+	_, err := s.b.Send(&fm.Recipient, object, sendOptions)
 
 	return err
 }

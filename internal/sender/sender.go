@@ -2,7 +2,6 @@ package sender
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/maxnrm/teleflood/config"
 	m "github.com/maxnrm/teleflood/pkg/message"
@@ -34,11 +33,16 @@ func (s *Sender) Send(grl ratelimit.Limiter, fm *m.FloodMessage) error {
 
 	var object tele.Sendable
 
-	fmt.Println(fm)
+	var sendOptions tele.SendOptions
+	if fm.SendOptions == nil {
+		sendOptions = tele.SendOptions{}
+	} else {
+		sendOptions = *fm.SendOptions
+	}
 
 	switch fm.Type {
 	case m.Text:
-		_, err := s.b.Send(&fm.Recipient, fm.Text, fm.SendOptions)
+		_, err := s.b.Send(&fm.Recipient, fm.Text, sendOptions)
 		return err
 	case m.Audio:
 		object = fm.Audio
@@ -79,13 +83,6 @@ func (s *Sender) Send(grl ratelimit.Limiter, fm *m.FloodMessage) error {
 		rl.Take()
 	} else {
 		rl.Take()
-	}
-
-	var sendOptions tele.SendOptions
-	if fm.SendOptions == nil {
-		sendOptions = tele.SendOptions{}
-	} else {
-		sendOptions = *fm.SendOptions
 	}
 
 	// check if we can send complying to global rate limit

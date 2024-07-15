@@ -3,11 +3,12 @@ package flooder
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/maxnrm/teleflood/config"
 	"github.com/maxnrm/teleflood/internal/sender"
 	"github.com/maxnrm/teleflood/pkg/message"
-	"go.uber.org/ratelimit"
+	"golang.org/x/time/rate"
 )
 
 type provider interface {
@@ -15,7 +16,7 @@ type provider interface {
 }
 
 type Flooder struct {
-	grl ratelimit.Limiter
+	grl *rate.Limiter
 	// TODO: delete senders unused for some time
 	smap map[string]*sender.Sender
 	p    provider
@@ -23,11 +24,12 @@ type Flooder struct {
 
 func New(p provider) *Flooder {
 
-	grl := ratelimit.New(config.GLOBAL_RATE_LIMIT_GLOBAL)
+	limit := rate.Every(time.Second / time.Duration(config.GLOBAL_RATE_LIMIT_GLOBAL))
 
 	return &Flooder{
-		p:   p,
-		grl: grl,
+		p:    p,
+		smap: make(map[string]*sender.Sender),
+		grl:  rate.NewLimiter(limit, config.GLOBAL_RATE_LIMIT_GLOBAL),
 	}
 }
 
@@ -56,8 +58,9 @@ func (f *Flooder) Start() error {
 				fmt.Println(err)
 				continue
 			}
+			f.smap[token] = s
 		}
 
-		go s.Send(f.grl, &msg)
+		go s.Send(ctx, f.grl, &msg)
 	}
 }

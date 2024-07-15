@@ -1,18 +1,27 @@
 package sender
 
 import (
+	"context"
 	"errors"
+	"fmt"
+	"time"
 
 	"github.com/maxnrm/teleflood/config"
 	m "github.com/maxnrm/teleflood/pkg/message"
-	"go.uber.org/ratelimit"
+	"golang.org/x/time/rate"
 	tele "gopkg.in/telebot.v3"
 )
+
+type UserRateLimiter struct {
+	ChatId      string
+	RateLimiter *rate.Limiter
+	LastMsgSent time.Time
+}
 
 type Sender struct {
 	b *tele.Bot
 	// TODO: delete items unused for some time
-	userRateLimit map[string]ratelimit.Limiter
+	userRateLimit map[string]*UserRateLimiter
 }
 
 func New(botToken string) (*Sender, error) {
@@ -25,11 +34,12 @@ func New(botToken string) (*Sender, error) {
 	}
 
 	return &Sender{
-		b: b,
+		b:             b,
+		userRateLimit: make(map[string]*UserRateLimiter),
 	}, nil
 }
 
-func (s *Sender) Send(grl ratelimit.Limiter, fm *m.FloodMessage) error {
+func (s *Sender) Send(ctx context.Context, grl *rate.Limiter, fm *m.FloodMessage) error {
 
 	var object tele.Sendable
 
@@ -40,9 +50,29 @@ func (s *Sender) Send(grl ratelimit.Limiter, fm *m.FloodMessage) error {
 		sendOptions = fm.SendOptions
 	}
 
+	chatId := fm.Recipient.Recipient()
+
+	// check if we can send complyting to user ratelimit
+	rl, ok := s.userRateLimit[chatId]
+	if !ok {
+		limit := rate.Every(time.Second / time.Duration(config.USER_RATE_LIMIT))
+		rl = &UserRateLimiter{
+			ChatId:      chatId,
+			RateLimiter: rate.NewLimiter(limit, config.USER_RATE_LIMIT),
+		}
+		s.userRateLimit[chatId] = rl
+	}
+	rl.RateLimiter.Wait(ctx)
+
+	// check if we can send complying to global rate limit
+	grl.Wait(ctx)
+
 	switch fm.Type {
 	case m.Text:
-		_, err := s.b.Send(&fm.Recipient, fm.Text, sendOptions)
+		_, err := s.b.Send(&fm.Recipient, *fm.Text, sendOptions)
+		if err != nil {
+			fmt.Println(err)
+		}
 		return err
 	case m.Audio:
 		object = fm.Audio
@@ -74,20 +104,10 @@ func (s *Sender) Send(grl ratelimit.Limiter, fm *m.FloodMessage) error {
 		return errors.New("teleflood: now Sendable provided")
 	}
 
-	chatId := fm.Recipient.Recipient()
-
-	// check if we can send complyting to user ratelimit
-	if rl, ok := s.userRateLimit[chatId]; !ok {
-		s.userRateLimit[chatId] = ratelimit.New(config.USER_RATE_LIMIT)
-		rl := s.userRateLimit[chatId]
-		rl.Take()
-	} else {
-		rl.Take()
+	_, err := s.b.Send(&fm.Recipient, object, sendOptions)
+	if err != nil {
+		fmt.Println(err)
 	}
 
-	// check if we can send complying to global rate limit
-	grl.Take()
-	_, err := s.b.Send(&fm.Recipient, object, sendOptions)
-
-	return err
+	return nil
 }

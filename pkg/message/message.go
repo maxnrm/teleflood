@@ -1,6 +1,9 @@
 package message
 
 import (
+	"errors"
+	"fmt"
+
 	tele "gopkg.in/telebot.v3"
 )
 
@@ -56,4 +59,53 @@ type FloodMessage struct {
 type WrappedMessage struct {
 	BotToken     string       `json:"bot_token"`
 	FloodMessage FloodMessage `json:"message"`
+}
+
+func (fm *FloodMessage) Send(b *tele.Bot, r tele.Recipient, so *tele.SendOptions) (*tele.Message, error) {
+
+	var object tele.Sendable
+
+	switch fm.Type {
+	case Text:
+		msg, err := b.Send(&fm.Recipient, *fm.Text, so)
+		if err != nil {
+			return nil, err
+		}
+		return msg, nil
+	case Audio:
+		object = fm.Audio
+	case Document:
+		object = fm.Document
+	case Photo:
+		object = fm.Photo
+	case Sticker:
+		object = fm.Sticker
+	case Voice:
+		object = fm.Voice
+	case VideoNote:
+		object = fm.VideoNote
+	case Video:
+		object = fm.Video
+	case Animation:
+		object = fm.Animation
+	case Location:
+		object = fm.Location
+	case Venue:
+		object = fm.Venue
+	case Poll:
+		object = fm.Poll
+	case Game:
+		object = fm.Game
+	case Dice:
+		object = fm.Dice
+	default:
+		return nil, errors.New("teleflood: now Sendable provided")
+	}
+
+	msg, err := b.Send(&fm.Recipient, object, so)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return msg, nil
 }

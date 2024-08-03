@@ -67,7 +67,7 @@ func (fm *FloodMessage) Send(b *tele.Bot, r tele.Recipient, so *tele.SendOptions
 
 	switch fm.Type {
 	case Text:
-		msg, err := b.Send(&fm.Recipient, *fm.Text, so)
+		msg, err := b.Send(r, *fm.Text, so)
 		if err != nil {
 			return nil, err
 		}
@@ -102,7 +102,7 @@ func (fm *FloodMessage) Send(b *tele.Bot, r tele.Recipient, so *tele.SendOptions
 		return nil, errors.New("teleflood: now Sendable provided")
 	}
 
-	msg, err := b.Send(&fm.Recipient, object, so)
+	msg, err := b.Send(r, object, so)
 	if err != nil {
 		fmt.Println(err)
 	}

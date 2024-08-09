@@ -24,8 +24,9 @@ type Sender struct {
 
 func New(bot *tele.Bot, gl ratelimit.Limiter) (*Sender, error) {
 	return &Sender{
-		b:                bot,
-		userRateLimiters: make(map[string]*UserRateLimiter),
+		b:                 bot,
+		globalRateLimiter: gl,
+		userRateLimiters:  make(map[string]*UserRateLimiter),
 	}, nil
 }
 

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/maxnrm/teleflood/config"
 	"github.com/maxnrm/teleflood/pkg/message"
 	"go.uber.org/ratelimit"
 	tele "gopkg.in/telebot.v3"
@@ -38,7 +37,7 @@ func (s *Sender) Send(to tele.Recipient, fm *message.FloodMessage, so *tele.Send
 	if !ok {
 		rl = &UserRateLimiter{
 			ChatId:      chatId,
-			RateLimiter: ratelimit.New(config.USER_RATE_LIMIT, ratelimit.WithoutSlack),
+			RateLimiter: ratelimit.New(1, ratelimit.WithoutSlack),
 		}
 		s.userRateLimiters[chatId] = rl
 	}

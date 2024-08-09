@@ -45,7 +45,7 @@ func (f *Flooder) Start() error {
 		ctx := context.Background()
 		wrappedMsg, err := f.p.Next(ctx)
 		if err != nil {
-			return err
+			fmt.Println(err)
 		}
 
 		token := wrappedMsg.BotToken

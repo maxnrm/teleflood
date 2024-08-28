@@ -61,9 +61,7 @@ type WrappedMessage struct {
 	FloodMessage FloodMessage `json:"message"`
 }
 
-func (fmSource *FloodMessage) Send(b *tele.Bot, r tele.Recipient, so *tele.SendOptions) (*tele.Message, error) {
-
-	fm := *fmSource
+func (fm *FloodMessage) Send(b *tele.Bot, r tele.Recipient, so *tele.SendOptions) (*tele.Message, error) {
 
 	var object tele.Sendable
 
@@ -75,31 +73,44 @@ func (fmSource *FloodMessage) Send(b *tele.Bot, r tele.Recipient, so *tele.SendO
 		}
 		return msg, nil
 	case Audio:
-		object = fm.Audio
+		o := *fm.Audio
+		object = &o
 	case Document:
-		object = fm.Document
+		o := *fm.Document
+		object = &o
 	case Photo:
-		object = fm.Photo
+		o := *fm.Photo
+		object = &o
 	case Sticker:
-		object = fm.Sticker
+		o := *fm.Sticker
+		object = &o
 	case Voice:
-		object = fm.Voice
+		o := *fm.Voice
+		object = &o
 	case VideoNote:
-		object = fm.VideoNote
+		o := *fm.VideoNote
+		object = &o
 	case Video:
-		object = fm.Video
+		o := *fm.Video
+		object = &o
 	case Animation:
-		object = fm.Animation
+		o := *fm.Animation
+		object = &o
 	case Location:
-		object = fm.Location
+		o := *fm.Location
+		object = &o
 	case Venue:
-		object = fm.Venue
+		o := *fm.Venue
+		object = &o
 	case Poll:
-		object = fm.Poll
+		o := *fm.Poll
+		object = &o
 	case Game:
-		object = fm.Game
+		o := *fm.Game
+		object = &o
 	case Dice:
-		object = fm.Dice
+		o := *fm.Dice
+		object = &o
 	default:
 		return nil, errors.New("teleflood: now Sendable provided")
 	}

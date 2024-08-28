@@ -61,7 +61,9 @@ type WrappedMessage struct {
 	FloodMessage FloodMessage `json:"message"`
 }
 
-func (fm *FloodMessage) Send(b *tele.Bot, r tele.Recipient, so *tele.SendOptions) (*tele.Message, error) {
+func (fmSource *FloodMessage) Send(b *tele.Bot, r tele.Recipient, so *tele.SendOptions) (*tele.Message, error) {
+
+	fm := *fmSource
 
 	var object tele.Sendable
 
